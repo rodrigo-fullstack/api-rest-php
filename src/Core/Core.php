@@ -3,6 +3,9 @@
 
 namespace App\Core;
 
+use App\Http\Request;
+use App\Http\Response;
+
 Class Core{
     // URLs
     public static function dispatch(array $routes){
@@ -11,6 +14,8 @@ Class Core{
         $url = "/";
 
         $namespaceController = "App\\Controllers\\";
+
+        $routeFound = false;
 
         // Se houver url além de /, concatena na $url com essa nova url
         isset($_GET['url']) && $url .= $_GET['url'];
@@ -24,8 +29,28 @@ Class Core{
                 // Impede de retornar o path
                 array_shift($matches);
 
+                
+
+                // Se o método for diferente da requisição ao servidor, gera um erro 405
+                // Corrigir dps erro do método POST passar na requisição
+                if($route['method'] !== Request::method()){
+                    Response::json([
+                        "error" => true,
+                        "success" => false,
+                        "message" => "Sorry, method not allowed"
+                    ], 405);
+                    return;
+                } else{
+                    Response::json([
+                        "error" => false,
+                        "success" => true,
+                        "message" => "Você conseguiu passar pelo método {$route['method']}"
+                    ]);
+                }
+
                 //Separa o action yyyyController do método a partir do @
                 [$controller, $action] = explode('@', $route['action']);
+
 
                 // Coleta o nome completo do namespace da controller
                 $controller =  $namespaceController . $controller;
