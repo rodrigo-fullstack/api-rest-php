@@ -32,10 +32,11 @@ class UserController{
         }
 
         // Status 201 determina que foi criado novo recurso com sucesso
-        Response::json(
+        $response::json(
             [
             "error" => false,
             "success" => true,
+            "message" => "User created succesfully",
             "data" => $usrServ], 
             201
         );
