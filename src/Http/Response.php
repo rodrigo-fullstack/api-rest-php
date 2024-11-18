@@ -12,5 +12,4 @@ Class Response{
 
         echo json_encode($data);
     }
-
 }
