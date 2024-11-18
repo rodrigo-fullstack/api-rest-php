@@ -7,6 +7,9 @@ require_once(__DIR__ . '/src/routes/main.php');
 
 use App\Core\Core;
 use App\Http\Routes;
+use App\Models\Database;
+
+Database::getConnection();
 
 // Exibindo rotas de routes/main.php
 Core::dispatch(Routes::routes());
