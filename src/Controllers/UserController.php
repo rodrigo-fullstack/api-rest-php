@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Http\Request;
 use App\Http\Response;
+use App\Services\UserService;
 
 class UserController{
     public function login(){
@@ -17,11 +18,14 @@ class UserController{
     public function save(){
         $body = Request::body();
 
+        $usrServ = UserService::save($body);
+
         Response::json(
             [
             "error" => false,
             "success" => true,
-            "data" => $body], 201
+            "data" => $usrServ], 
+            201
         );
     }
 
