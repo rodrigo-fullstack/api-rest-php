@@ -3,6 +3,6 @@
 
 namespace App\Http;
 
-Class JWT{
+class JWT{
     
 }
