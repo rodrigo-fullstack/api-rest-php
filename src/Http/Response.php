@@ -5,7 +5,7 @@ namespace App\Http;
 
 Class Response{
     
-    public static function json($data = [], $status = 200, $headers){
+    public static function json($data = [], $status = 200){
         http_response_code($status);
         
         header('Content-type-application: application/json');
