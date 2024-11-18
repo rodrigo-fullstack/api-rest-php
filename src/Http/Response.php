@@ -5,10 +5,10 @@ namespace App\Http;
 
 Class Response{
     
-    public static function json($data = [], $status = 200){
+    public static function json(array $data = [], int $status = 200){
         http_response_code($status);
         
-        header('Content-type-application: application/json');
+        header('Content-Type: application/json');
 
         echo json_encode($data);
     }
