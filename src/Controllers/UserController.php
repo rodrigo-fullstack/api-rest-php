@@ -15,11 +15,23 @@ class UserController{
         
     }
     
-    public function save(){
-        $body = Request::body();
+    public function save(Request $request, Response $response){
+        // Escuta pelo envio de requisições de body
+        $body = $request::body();
 
+        // Dados para serem cadastrados são enviados para o service para serem verificados
         $usrServ = UserService::save($body);
 
+        if(isset($usrServ['error'])){
+            // Erro 400 houve erro na requisição (BAD_REQUEST)
+            return $response::json([
+                "error" => true,
+                "success" => false,
+                "message" => $usrServ['error']
+            ], 400);
+        }
+
+        // Status 201 determina que foi criado novo recurso com sucesso
         Response::json(
             [
             "error" => false,
