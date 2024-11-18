@@ -43,13 +43,14 @@ Class Core{
                         "message" => "Sorry, method not allowed"
                     ], 405);
                     return;
-                } else{
-                    Response::json([
-                        "error" => false,
-                        "success" => true,
-                        "message" => "Você conseguiu passar pelo método {$route['method']}"
-                    ]);
-                }
+                } 
+                // else{
+                //     Response::json([
+                //         "error" => false,
+                //         "success" => true,
+                //         "message" => "Você conseguiu passar pelo método {$route['method']}"
+                //     ]);
+                // }
 
                 //Separa o action yyyyController do método a partir do @
                 [$controller, $action] = explode('@', $route['action']);
