@@ -15,69 +15,83 @@ class Database{
     private static $db_name = Config::DB_NAME;
 
 
-    private static $dbh;
-    private static $stmt;
-    private static $error;
+    private $dbh;
+    private $stmt;
+    private $error;
 
-    public static function getConnection(){
-        $dsn = "mysql:host= " . self::$db_host . ";dbname=" . self::$db_name . ";port=" . self::$db_port;
+    public function __construct(){
+        $dsn = "mysql:host=" . self::$db_host . ";dbname=" . self::$db_name . ";port=" . self::$db_port;
 
         $options = [
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ];
 
         try{
             // Armazenando conexão
-            self::$dbh = new PDO($dsn, self::$db_user, self::$db_pass, $options);
-
+            $this->dbh = new PDO($dsn, self::$db_user, self::$db_pass, $options);
+            echo "DBH definido";
         } catch(PDOException $e){
-            self::$error = $e->getMessage();
-            // Enviando erro
-            return self::$error;
+            $this->error = $e->getMessage();
+            echo $this->error;
         }
     }
 
-    public static function query($sql){
+    public function query($sql){
         // Se estiver definida a conexão...
-        if(isset(self::$dbh)){
+        if(isset($this->dbh)){
             // Prepara
-            self::$stmt = self::$dbh->prepare($sql);
+            $this->stmt = $this->dbh->prepare($sql);
         }
 
     }
 
-    public static function execute(){
+    public function execute(){
         // Se estiver definido o statement...
-        if(isset(self::$stmt)){
+        if(isset($this->stmt)){
             // Executa
-            self::$stmt->execute();
+            $this->stmt->execute();
         }
         
     }
 
     // Vincula no Statement
-    public static function bind($param, $value){
-        if(isset(self::$stmt)){
-            self::$stmt->bindValue($param, $value);
+    public function bind($param, $value){
+        if(isset($this->stmt)){
+            $this->stmt->bindValue($param, $value);
+
         }
 
     }
 
     // Recupera 1 resultado...
-    public static function fetchOne(){
-        if(isset(self::$stmt)){
-            self::$stmt->fetch();
+    public function fetchOne(){
+        if(isset($this->stmt)){
+            return $this->stmt->fetch();
         }
 
     }
 
     // Recupera Todos...
-    public static function fetchAll(){
-        if(isset(self::$stmt)){
-            self::$stmt->fetchAll();
+    public function fetchAll(){
+        // Se está definido, retorna todos os resultados
+        if(isset($this->stmt)){
+            return $this->stmt->fetchAll();
         }
+        // Se não está retorna nulo
+        return null;
 
+    }
+
+    // Retorna verdadeiro se o último id inserido é > 0
+    public function lastInsertId(){
+        // Se o dbh estiver definido retorna true ou false se houve inserção...
+        if(isset($this->dbh)){
+            return $this->dbh->lastInsertId() > 0 ? true : false;
+
+        }
+        // Retorna nulo se não foi definido...
+        return null;
     }
 }
