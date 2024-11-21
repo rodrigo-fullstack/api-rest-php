@@ -4,6 +4,7 @@
 namespace App\Models;
 
 use App\Config\Config;
+use App\Services\UserService;
 use PDO;
 use PDOException;
 
@@ -19,7 +20,7 @@ class Database{
     private $stmt;
     private $error;
 
-    public function __construct(){
+    public function getConnection(){
         $dsn = "mysql:host=" . self::$db_host . ";dbname=" . self::$db_name . ";port=" . self::$db_port;
 
         $options = [
@@ -28,14 +29,7 @@ class Database{
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ];
 
-        try{
-            // Armazenando conexão
-            $this->dbh = new PDO($dsn, self::$db_user, self::$db_pass, $options);
-            echo "DBH definido";
-        } catch(PDOException $e){
-            $this->error = $e->getMessage();
-            echo $this->error;
-        }
+        $this->dbh = new PDO($dsn, self::$db_user, self::$db_pass, $options);
     }
 
     public function query($sql){

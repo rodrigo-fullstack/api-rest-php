@@ -27,7 +27,7 @@ class UserController{
             return $response::json([
                 "error" => true,
                 "success" => false,
-                "message" => $usrServ['error']
+                "error-msg" => $usrServ['error']
             ], 400);
         }
 
@@ -36,7 +36,6 @@ class UserController{
             [
             "error" => false,
             "success" => true,
-            "message" => "User created succesfully",
             "data" => $usrServ], 
             201
         );

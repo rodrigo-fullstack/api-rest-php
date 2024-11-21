@@ -3,11 +3,18 @@
 namespace App\Models;
 
 use App\Models\Database;
+use PDOException;
+use Throwable;
 
 class User{
     public static function save($data){
         $bd = new Database();
         
+        // Realiza a conexão pelo dbh do db e retorna como valor true ou uma mensagem de erro
+        $bd->getConnection();
+
+        // Se houve a conexão...
+        // Aceita objeto como condição para ser aceita...
         // Consulta de inserção...
         $bd->query("
             INSERT INTO usuario(email, senha)
@@ -20,8 +27,10 @@ class User{
 
         // Execução da consulta
         $bd->execute();
-
+        
         // Retorna se houve última inserção de ID, caso contrário é um false
         return $bd->lastInsertId();
+        
     }
+
 }
