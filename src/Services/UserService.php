@@ -25,6 +25,30 @@ class UserService{
         }
     }
     
+    public static function auth(array $data){
+        try{
+            $fields = Validator::validate([
+                "email" => $data['email'],
+                "senha" => $data['senha']
+            ]);
+
+            $user = User::auth($fields);
+
+            // dump($user);
+
+            // Verificar depois como enviar erro 401 para usuário não autorizado...
+            if(!$user) return "Sorry, we could not authenticate you...";
+
+            return $user;
+        }
+        catch(PDOException $e){
+            return Validator::validatePDO($e->getCOde());
+        } 
+        catch(Exception $e){
+            return ["error" => $e->getMessage()];
+        }
+    }
+
     public static function save(array $data){
         try{
             // Campos são validados para serem persistidos no bd
@@ -46,13 +70,9 @@ class UserService{
             return "User has been created succesfully";
         }
         catch(PDOException $e){
-            echo "Passei no catch do PDO...";
-            
             return Validator::validatePDO($e->getCode());
         }
         catch(Exception $e){
-            echo "Passei no catch da Exception...";
-            // Corrigido código 201 para quando não recebe senha ou email válido
             return ["error" => $e->getMessage()];
         }
     }

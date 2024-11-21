@@ -7,8 +7,32 @@ use App\Http\Response;
 use App\Services\UserService;
 
 class UserController{
-    public function login(){
-        
+    public function auth(Request $request, Response $response){
+        // Escutando requisição body...
+        $body = $request::body();
+
+        // Recebendo usuário do UserService
+        $usrServ = UserService::auth($body);
+
+        // dump($usrServ);
+        // dump($usrServ['error']);
+        // dump(isset($usrServ['error']));
+
+        // Pensar
+        if(isset($usrServ['error'])){
+            return response::json([
+                "error" => true,
+                "success" => false,
+                "error-msg" => $usrServ['error']
+            ], 400
+            );
+        }
+
+        return response::json([
+            "error" => false,
+            "success" => true,
+            "jwt" => $usrServ
+        ]);
     }
     
     public function fetchAll(Request $request, Response $response){
