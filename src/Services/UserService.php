@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Http\JWT;
 use App\Models\User;
 use App\Utils\Validator;
 use Exception;
@@ -39,7 +40,10 @@ class UserService{
             // Verificar depois como enviar erro 401 para usuário não autorizado...
             if(!$user) return "Sorry, we could not authenticate you...";
 
-            return $user;
+            return JWT::generate([
+                "id_usuario" => $user['id_usuario'],
+                "email" => $user['email']
+            ]);
         }
         catch(PDOException $e){
             return Validator::validatePDO($e->getCOde());
