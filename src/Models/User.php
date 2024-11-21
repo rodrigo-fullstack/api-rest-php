@@ -22,6 +22,19 @@ class User{
         return $bd->fetchAll();
     }
 
+    public static function fetchOne(int|string $id){
+        $bd = new Database();
+
+        $bd->getConnection();
+
+        $bd->query("SELECT * FROM usuario WHERE id = :id");
+        $bd->bind(":id", $id);
+
+        $bd->execute();
+
+        return $bd->fetchOne();
+    }
+
     public static function save(array $data){
         $bd = new Database();
         
