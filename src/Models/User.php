@@ -7,6 +7,21 @@ use PDOException;
 use Throwable;
 
 class User{
+    public static function fetchAll(){
+        $bd = new Database();
+
+        $bd->getConnection();
+
+        $bd->query("SELECT * FROM usuario");
+
+        $bd->execute();
+
+        // dump($bd->fetchAll());
+
+        // Retorna um array contendo todos os elementos...
+        return $bd->fetchAll();
+    }
+
     public static function save($data){
         $bd = new Database();
         
@@ -33,4 +48,17 @@ class User{
         
     }
 
+    
+    // É importante passar o ID pelo JWT...
+    // public static function update($data){
+    //     $bd = new Database();
+
+    //     $bd->getConnection();
+
+    //     $stmt = $bd->query("UPDATE FROM usuario SET email = :email, senha = :senha WHERE id = :id");
+
+    //     $bd->execute();
+
+    //     return $stmt->rowCount();
+    // }
 }

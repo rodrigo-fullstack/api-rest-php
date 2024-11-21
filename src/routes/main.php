@@ -7,7 +7,7 @@ use App\Http\Routes;
 Routes::get("/", "HomeController@index");
 Routes::get("/index", "HomeController@index");
 Routes::get('/users/login', "UserController@login");
-Routes::get('/users/fetch', "UserController@fetch");
+Routes::get('/users/fetchAll', "UserController@fetchAll");
 Routes::post("/users/save", "UserController@save");
 Routes::put('/users/update', "UserController@update");
 Routes::delete('/users/{id}/delete', "UserController@delete");

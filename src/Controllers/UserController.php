@@ -11,8 +11,21 @@ class UserController{
         
     }
     
-    public function fetch(){
-        
+    public function fetchAll(Request $request, Response $response){
+        $usrServ = UserService::fetchAll();
+
+        if(isset($usrServ['error'])){
+            return $response::json(
+                [
+                "error" => true,
+                "success" => false,
+                "error-msg" => $usrServ['error']
+                ], 400
+            );
+        }
+
+        return $response::json($usrServ);
+
     }
     
     public function save(Request $request, Response $response){
@@ -41,9 +54,11 @@ class UserController{
         );
     }
 
-    public function update(){
-        
-    }
+    // public function update(Request $request, Response $response){
+    //     $body = $request::body();
+
+    //     $usrServ = UserService::update()
+    // }
 
     public function delete(Request $request, Response $response, int $id){
 

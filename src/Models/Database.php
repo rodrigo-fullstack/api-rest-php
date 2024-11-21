@@ -36,7 +36,7 @@ class Database{
         // Se estiver definida a conexão...
         if(isset($this->dbh)){
             // Prepara
-            $this->stmt = $this->dbh->prepare($sql);
+            return $this->stmt = $this->dbh->prepare($sql);
         }
 
     }
