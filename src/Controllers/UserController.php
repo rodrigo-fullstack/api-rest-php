@@ -35,9 +35,12 @@ class UserController{
         ]);
     }
     
-    public function fetchAll(Request $request, Response $response){
-        $usrServ = UserService::fetchAll();
-
+    public function find(Request $request, Response $response){
+ 
+        $authorization = $request::authorization();
+     
+        $usrServ = UserService::find($authorization);
+    
         if(isset($usrServ['error'])){
             return $response::json(
                 [
@@ -47,10 +50,30 @@ class UserController{
                 ], 400
             );
         }
-
+    
         return $response::json($usrServ);
-
+    
     }
+
+    // public function fetchAll(Request $request, Response $response){
+        
+    //     $authorization = $request::authorization();
+        
+    //     $usrServ = UserService::fetchAll($authorization);
+
+    //     if(isset($usrServ['error'])){
+    //         return $response::json(
+    //             [
+    //             "error" => true,
+    //             "success" => false,
+    //             "error-msg" => $usrServ['error']
+    //             ], 400
+    //         );
+    //     }
+
+    //     return $response::json($usrServ);
+
+    // }
     
     public function save(Request $request, Response $response){
         // Escuta pelo envio de requisições de body

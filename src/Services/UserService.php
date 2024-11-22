@@ -13,17 +13,38 @@ use Throwable;
 // Realiza a aplicação das regras de negócio sobre os dados, evitando que a controladora fique poluída
 class UserService{
     // Recebe somente ids inteiros
-    public static function fetchAll(){
+    public static function find(mixed $jwt){
         try{
-            return $users = User::fetchAll();
+            if(!$jwt) return ["error" => "Sorry, we couldn't authenticate you..."];
+            
+            // Recebe o token do jwt
+            
+            $userFromToken = JWT::validateToken($jwt);
 
-        } catch(PDOException $e){
+            $user = User::find($userFromToken['id_usuario']);
+            if(!$user) return ["error" => "Sorry, your data aren't present in our database."];
+
+            return $user;
+        }catch(PDOException $e){
             echo "Passei no catch do PDO...";
             return Validator::validatePDO($e->getCode());
             // return Validator::validatePDO($e->getCode());
         } catch(Exception $e){
             return ["error" => $e->getMessage()];
         }
+        
+        // try{
+        //     if(!$authorization) return "Sorry, user can't access this resource.";
+
+        //     return $users = User::fetchAll();
+
+        // } catch(PDOException $e){
+        //     echo "Passei no catch do PDO...";
+        //     return Validator::validatePDO($e->getCode());
+        //     // return Validator::validatePDO($e->getCode());
+        // } catch(Exception $e){
+        //     return ["error" => $e->getMessage()];
+        // }
     }
     
     public static function auth(array $data){

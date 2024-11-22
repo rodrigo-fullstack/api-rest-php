@@ -7,7 +7,8 @@ use PDOException;
 use Throwable;
 
 class User{
-    public static function fetchAll(){
+    public static function fetchAll($authorization){
+
         $bd = new Database();
 
         $bd->getConnection();
@@ -22,13 +23,18 @@ class User{
         return $bd->fetchAll();
     }
 
+    public static function find(int|string $id){
+        return self::fetchOne($id);
+    }
+
     public static function fetchOne(int|string $id){
         $bd = new Database();
 
         $bd->getConnection();
 
-        $bd->query("SELECT * FROM usuario WHERE id = :id");
-        $bd->bind(":id", $id);
+        // Corrigindo problema do atributo id (correto: id_usuario)
+        $bd->query("SELECT * FROM usuario WHERE id_usuario = :id_usuario");
+        $bd->bind(":id_usuario", $id);
 
         $bd->execute();
 

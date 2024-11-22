@@ -29,6 +29,22 @@ class JWT{
         return self::base64url_encode($signature);
     }
 
+    public static function validateToken($jwt){
+        
+        $tokenPartials = explode('.', $jwt);
+        
+        // Não possui 3 partes não é JWT válido
+        if(count($tokenPartials) !== 3) return false;
+        
+        // Atribui as partes do token a seus respectivos nomes
+        [$header, $payload, $signature] = $tokenPartials;
+        
+        
+        if($signature !== self::signature($header, $payload)) return false;
+        
+        return self::base64url_decode($payload);
+    }
+
     public static function base64url_encode($data){
         return rtrim(strtr(base64_encode($data), "+/", "-_"), "=");
     }
@@ -36,11 +52,12 @@ class JWT{
     public static function base64url_decode($data){
         $padding = strlen($data) % 4;
         
-        $padding !== 0 && $data .= str_repeat("=", $padding - 4);
+        // Problema na quantidade do $padding - 4
+        $padding !== 0 && $data .= str_repeat("=",  (4 - $padding));
 
         $data = strtr($data, '-_', '+/');
 
-        return base64_decode($data);
+        return json_decode(base64_decode($data), true);
     }
     
 }
