@@ -6,6 +6,7 @@ use App\Http\Routes;
 // Padronização do Action é o nome da controladora separada por @ e o método da controladora
 Routes::get("/", "HomeController@index");
 Routes::get("/index", "HomeController@index");
+Routes::get("/users/find", "UserController@find");
 Routes::get('/users/{id}/fetchOne', "UserController@fetchOne");
 Routes::get('/users/fetchAll', "UserController@fetchAll");
 Routes::post('/users/auth', "UserController@auth");
