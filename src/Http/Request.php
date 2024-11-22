@@ -20,4 +20,19 @@ Class Request{
         
         return $data;
     }
+
+    public static function authorization(){
+        $headers = getallheaders();
+
+        if(!isset($headers['Authorization'])) return false;
+
+        $authorization = $headers['Authorization'];
+        $authorization = explode(" ", $authorization);
+
+        // dump($authorization);
+
+        if(count($authorization) !== 2) return false;
+        
+        return $authorization[1] ?? '';
+    }
 }
