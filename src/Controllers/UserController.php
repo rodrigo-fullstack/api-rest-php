@@ -107,6 +107,28 @@ class UserController{
     //     $usrServ = UserService::update()
     // }
 
+    public function update(Request $request, Response $response){
+        $body = $request::body();
+
+        $authorization = $request::authorization();
+
+        $usrServ = UserService::update($authorization, $body);
+
+        if(isset($usrServ['error'])){
+            return $response::json([
+                "error" => true,
+                "success" => false,
+                "error-msg" => $usrServ
+            ], 400);
+        }
+
+        return $response::json([
+            "error" => false,
+            "success" => true,
+            "message" => "User has been updated succesfully"
+        ], 201);
+    }
+
     public function delete(Request $request, Response $response, int $id){
 
     }

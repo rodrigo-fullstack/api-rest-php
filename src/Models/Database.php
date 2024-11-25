@@ -88,4 +88,11 @@ class Database{
         // Retorna nulo se não foi definido...
         return null;
     }
+
+    public function checkAffectedRows(){
+        if(isset($this->stmt)){
+            return $this->stmt->rowCount();
+        }
+        return null;
+    }
 }

@@ -92,6 +92,30 @@ class User{
         ];
     }
 
+    public static function update(int|string $id, array $data){
+        $bd = new Database();
+
+        $bd->getConnection();
+
+        $stmt = $bd->query("UPDATE usuario
+        SET email = :email, senha = :senha
+        WHERE id_usuario = :id
+        ");
+
+        $bd->bind(':id', $id);
+
+        $bd->bind(':email', $data['email']);
+
+        $bd->bind(':senha', $data['senha']);
+        
+        $bd->execute();
+        
+        // Se houve linhas afetadas, ou seja, houve update: (vem depois do execute)
+        return $bd->checkAffectedRows() < 1 ? false : true;
+
+
+    }   
+
     public static function delete($id){
         $bd = new Database();
 
@@ -106,16 +130,5 @@ class User{
         return $bd->checkAffectedRows() < 1 ? false : true;
 
     }
-    // É importante passar o ID pelo JWT...
-    // public static function update($data){
-    //     $bd = new Database();
-
-    //     $bd->getConnection();
-
-    //     $stmt = $bd->query("UPDATE FROM usuario SET email = :email, senha = :senha WHERE id = :id");
-
-    //     $bd->execute();
-
-    //     return $stmt->rowCount();
-    // }
+    
 }
