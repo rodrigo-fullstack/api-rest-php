@@ -92,7 +92,20 @@ class User{
         ];
     }
 
-    
+    public static function delete($id){
+        $bd = new Database();
+
+        $bd->getConnection();
+
+        $bd->query("DELETE FROM usuario WHERE id_usuario = :id");
+
+        $bd->bind(":id", $id);
+
+        $bd->execute();
+
+        return $bd->checkAffectedRows() < 1 ? false : true;
+
+    }
     // É importante passar o ID pelo JWT...
     // public static function update($data){
     //     $bd = new Database();
