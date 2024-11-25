@@ -35,4 +35,12 @@ Class Request{
         
         return $authorization[1] ?? '';
     }
+
+    public static function requestUri(){
+        $url = $_SERVER["REQUEST_URI"];
+
+        $urlPartials = explode('/', $url);
+
+        return $urlPartials;
+    }
 }

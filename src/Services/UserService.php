@@ -135,8 +135,23 @@ class UserService{
         }
     }
 
-    public static function delete(){
-        
+    // Recebe o Id da URL
+    public static function delete(mixed $jwt, int|string $id){
+        try{
+            if(!$jwt) return ['error' => "Sorry, we couldn't authorize you..."];
+
+            $user = User::delete($id);
+
+            if(!$user) return ['error' => "User has not been deleted..."];
+
+            return "User has been deleted successfully";
+        }catch(PDOException $e){
+            return Validator::validatePDO($e->getCode());
+
+        }catch(Exception $e){
+            return ['error' => $e->getMessage()];
+
+        }
     }
 
 

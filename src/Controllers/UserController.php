@@ -129,8 +129,27 @@ class UserController{
         ], 201);
     }
 
-    public function delete(Request $request, Response $response, int $id){
+    public function delete(Request $request, Response $response){
+        $jwt = $request::authorization();
 
+        $id = $request::requestUri()[3];
+        // Outra forma é colocar o id como array e receber o dado de array $id[0] devido às chaves implementadas em main.php
+
+        $usrServ = UserService::delete($jwt, $id);
+
+        if(isset($usrServ['error'])){
+            return $response::json([
+                'error' => true,
+                'success' => false,
+                'error-msg' => $usrServ['error']
+            ], 400);
+        } 
+
+        return $response::json([
+            'error' => false,
+            'success' => true,
+            'message' => "User has been deleted successfully"
+        ], 200);
     }
 
 }
