@@ -27,6 +27,7 @@ Class Request{
         if(!isset($headers['Authorization'])) return false;
 
         $authorization = $headers['Authorization'];
+        
         $authorization = explode(" ", $authorization);
 
         // dump($authorization);

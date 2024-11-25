@@ -15,18 +15,20 @@ class UserService{
     // Recebe somente ids inteiros
     public static function find(mixed $jwt){
         try{
-            if(!$jwt) return ["error" => "Sorry, we couldn't authenticate you..."];
+            if(!$jwt) return ["unauthorized" => "Sorry, we couldn't authenticate you..."];
             
             // Recebe o token do jwt
             
-            $userFromToken = JWT::validateToken($jwt);
+            $userFromJwt = JWT::validateToken($jwt);
 
-            $user = User::find($userFromToken['id_usuario']);
-            if(!$user) return ["error" => "Sorry, your data aren't present in our database."];
+            if(!$userFromJwt) return ["unauthorized" => "Please, provide a valid token..."];
+
+            $user = User::find($userFromJwt['id_usuario']);
+
+            if(!$user) return ['error' => "Sorry, we couldn't find your data..."];
 
             return $user;
         }catch(PDOException $e){
-            echo "Passei no catch do PDO...";
             return Validator::validatePDO($e->getCode());
             // return Validator::validatePDO($e->getCode());
         } catch(Exception $e){
@@ -59,7 +61,7 @@ class UserService{
             // dump($user);
 
             // Verificar depois como enviar erro 401 para usuário não autorizado...
-            if(!$user) return "Sorry, we could not authenticate you...";
+            if(!$user) return ['unauthorized' => "Sorry, we could not authenticate you..."];
 
             return JWT::generate([
                 "id_usuario" => $user['id_usuario'],
@@ -102,8 +104,10 @@ class UserService{
         }
     }
 
-    public static function update(mixed $authorization, array $data){
+    public static function update(mixed $jwt, array $data){
         try{
+            if(!$jwt) return ['unauthorized' => "Sorry, we couldn't authenticate you... "];
+
             // Implementar lógica para não precisar reescrever os dados do banco para dados vazios.
             $fields = Validator::validate([
                 'email' => $data['email'],
@@ -114,22 +118,20 @@ class UserService{
             $fields['senha'] = password_hash($fields['senha'], PASSWORD_BCRYPT);
 
             // Validando token jwt 
-            $jwt = JWT::validateToken($authorization);
+            $userFromJwt = JWT::validateToken($jwt);
 
-            if(!$jwt) return ['error' => "Sorry, we couldn't authenticate you..."];
+            if(!$userFromJwt) return ['unauthorized' => "Please, provide a valid token..."];
 
-            $update = User::update($jwt['id_usuario'], [
+            $user = User::update($userFromJwt['id_usuario'], [
                 'email' => $fields['email'],
                 'senha' => $fields['senha']
             ]);
 
-            if(!$update) return ['error' => "Sorry, we couldn't update your user..."];
+            if(!$user) return ['error' => "Sorry, we couldn't update your user..."];
 
             return "Your user has been updated succesfully";
         }catch(PDOException $e){
-            $error = Validator::validatePDO($e->getCode());
-            return ['error' => $error];
-
+            return Validator::validatePDO($e->getCode());
         }catch(Exception $e){
             return ['error' => $e->getMessage()];
         }
@@ -138,11 +140,13 @@ class UserService{
     // Recebe o Id da URL
     public static function delete(mixed $jwt, int|string $id){
         try{
-            if(!$jwt) return ['error' => "Sorry, we couldn't authorize you..."];
+            if(!$jwt) return ['unauthorized' => "Sorry, we couldn't authenticate you..."];
+
+            if(!JWT::validateToken($jwt)) return ['unauthorized' => 'Please, provide a valid token...'];
 
             $user = User::delete($id);
 
-            if(!$user) return ['error' => "User has not been deleted..."];
+            if(!$user) return ['error' => "User not find in the database..."];
 
             return "User has been deleted successfully";
         }catch(PDOException $e){

@@ -83,8 +83,9 @@ class User{
         $user = $bd->fetchOne();
 
         // dump($user);
-        
-        if(!password_verify($data['senha'], $user['senha'])) return false;
+        if(!password_verify($data['senha'], $user['senha'])){
+            return false;  
+        } 
 
         return [
             "id_usuario" => $user['id_usuario'],

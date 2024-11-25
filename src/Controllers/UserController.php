@@ -18,7 +18,14 @@ class UserController{
         // dump($usrServ['error']);
         // dump(isset($usrServ['error']));
 
-        // Pensar
+        if(isset($usrServ['unauthorized'])){
+            return $response::json([
+                'error' => true,
+                'success' => false,
+                'error-msg' => $usrServ['unauthorized']
+            ], 401);
+        }
+
         if(isset($usrServ['error'])){
             return response::json([
                 "error" => true,
@@ -37,10 +44,18 @@ class UserController{
     
     public function find(Request $request, Response $response){
  
-        $authorization = $request::authorization();
+        $jwt = $request::authorization();
      
-        $usrServ = UserService::find($authorization);
+        $usrServ = UserService::find($jwt);
     
+        if(isset($usrServ['unauthorized'])){
+            return $response::json([
+                'error' => true,
+                'success' => false,
+                'error-msg' => $usrServ['unauthorized']
+            ], 401);
+        }
+
         if(isset($usrServ['error'])){
             return $response::json(
                 [
@@ -101,32 +116,34 @@ class UserController{
         );
     }
 
-    // public function update(Request $request, Response $response){
-    //     $body = $request::body();
-
-    //     $usrServ = UserService::update()
-    // }
-
     public function update(Request $request, Response $response){
         $body = $request::body();
 
-        $authorization = $request::authorization();
+        $jwt = $request::authorization();
 
-        $usrServ = UserService::update($authorization, $body);
+        $usrServ = UserService::update($jwt, $body);
+
+        if(isset($usrServ['unauthorized'])){
+            return $response::json([
+                'error' => true,
+                'success' => false,
+                'error-msg' => $usrServ['unauthorized']
+            ], 401);
+        }
 
         if(isset($usrServ['error'])){
             return $response::json([
                 "error" => true,
                 "success" => false,
-                "error-msg" => $usrServ
+                "error-msg" => $usrServ['error']
             ], 400);
         }
 
         return $response::json([
             "error" => false,
             "success" => true,
-            "message" => "User has been updated succesfully"
-        ], 201);
+            "message" => "User has been updated successfully"
+        ], 200);
     }
 
     public function delete(Request $request, Response $response){
@@ -136,6 +153,14 @@ class UserController{
         // Outra forma é colocar o id como array e receber o dado de array $id[0] devido às chaves implementadas em main.php
 
         $usrServ = UserService::delete($jwt, $id);
+
+        if(isset($usrServ['unauthorized'])){
+            return $response::json([
+                'error' => true,
+                'success' => false,
+                'error-msg' => $usrServ['unauthorized']
+            ], 401);
+        }
 
         if(isset($usrServ['error'])){
             return $response::json([
