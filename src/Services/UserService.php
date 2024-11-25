@@ -102,8 +102,41 @@ class UserService{
         }
     }
 
-    public static function update(){
+    public static function update(mixed $authorization, array $data){
+        try{
+            // Implementar lógica para não precisar reescrever os dados do banco para dados vazios.
+            $fields = Validator::validate([
+                'email' => $data['email'],
+                'senha' => $data['senha']
+            ]);
 
+            // Passando senha para criptografia
+            $fields['senha'] = password_hash($fields['senha'], PASSWORD_BCRYPT);
+
+            // Validando token jwt 
+            $jwt = JWT::validateToken($authorization);
+
+            if(!$jwt) return ['error' => "Sorry, we couldn't authenticate you..."];
+
+            $update = User::update($jwt['id_usuario'], [
+                'email' => $fields['email'],
+                'senha' => $fields['senha']
+            ]);
+
+            if(!$update) return ['error' => "Sorry, we couldn't update your user..."];
+
+            return "Your user has been updated succesfully";
+        }catch(PDOException $e){
+            $error = Validator::validatePDO($e->getCode());
+            return ['error' => $error];
+
+        }catch(Exception $e){
+            return ['error' => $e->getMessage()];
+        }
+    }
+
+    public static function delete(){
+        
     }
 
 
